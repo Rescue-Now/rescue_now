@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "303883149823",
+    "project_id": "rescuenow-7b085",
+    "storage_bucket": "rescuenow-7b085.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303883149823:android:beb045632b520e851487ca",
+        "android_client_info": {
+          "package_name": "com.rescuenowbaietz.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfS7DFw_GCEwLHl1jDCDRU1TqyE1CYpH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
