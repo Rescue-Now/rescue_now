@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     allergiesController.dispose();
     super.dispose();
   }
-
+//
   void toggleEditMode() {
     setState(() {
       isEditing = !isEditing;
