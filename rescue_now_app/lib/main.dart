@@ -1,165 +1,151 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:sensors_plus/sensors_plus.dart';
-import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() => runApp(CrashDetectionApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
-class CrashDetectionApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CrashDetectionScreen(),
+      title: 'Emergency SOS',
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(title: 'Home Page'),
     );
   }
 }
 
-class CrashDetectionScreen extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
   @override
-  _CrashDetectionScreenState createState() => _CrashDetectionScreenState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
-  // Threshold for crash detection (in G-forces).
-  static const double crashThreshold = 3.0;
-
-  // Variables for accelerometer data
-  double _accelerationMagnitude = 0.0;
-  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-
-  // Crash detection status
-  bool _crashDetected = false;
-  Timer? _confirmationTimer;
-
+class _MyHomePageState extends State<MyHomePage> {
   @override
-  void initState() {
-    super.initState();
-    _startAccelerometerListener();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            // Open the SOS menu when tapped
+            showEmergencyMenu(context);
+          },
+          onLongPress: () {
+            // Open a new tab (screen) when the button is long-pressed
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NewTabScreen()),
+            );
+          },
+          child: ElevatedButton(
+            onPressed: null, // Leave this null because onTap is handled by GestureDetector
+            child: const Text('Open Tab'),
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    _accelerometerSubscription?.cancel();
-    _confirmationTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startAccelerometerListener() {
-    _accelerometerSubscription =
-        accelerometerEvents.listen((AccelerometerEvent event) {
-          // Calculate the magnitude of the acceleration vector
-          double accelerationMagnitude = _calculateMagnitude(event);
-
-          setState(() {
-            _accelerationMagnitude = accelerationMagnitude;
-          });
-
-          // Check if the acceleration exceeds the crash threshold
-          if (accelerationMagnitude > crashThreshold && !_crashDetected) {
-            _crashDetected = true;
-            _showCrashDetectedDialog();
-          }
-        });
-  }
-
-  double _calculateMagnitude(AccelerometerEvent event) {
-    return sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
-  }
-
-  // Simulate crash by setting mock acceleration data
-  void _simulateCrash() {
-    // Simulated acceleration values that exceed the crash threshold
-    double simulatedX = 3.5;
-    double simulatedY = 0.0;
-    double simulatedZ = 0.0;
-    double simulatedMagnitude = sqrt(simulatedX * simulatedX + simulatedY * simulatedY + simulatedZ * simulatedZ);
-
-    setState(() {
-      _accelerationMagnitude = simulatedMagnitude;
-    });
-
-    if (simulatedMagnitude > crashThreshold && !_crashDetected) {
-      _crashDetected = true;
-      _showCrashDetectedDialog();
-    }
-  }
-
-  void _showCrashDetectedDialog() {
-    showDialog(
+  void showEmergencyMenu(BuildContext context) {
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Possible Crash Detected'),
-          content: Text(
-              'It seems like a crash may have occurred. Press "Cancel" if this is not correct.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                setState(() {
-                  _crashDetected = false;
-                });
-                Navigator.of(context).pop();
-                _confirmationTimer?.cancel();
-              },
-            ),
-          ],
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.video_call, color: Colors.red),
+                title: const Text('Apel video la urgențe'),
+                onTap: () {
+                  initiateVideoCall();
+                  sendSOSAlert();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.call, color: Colors.red),
+                title: const Text('Apel vocal + Alertă SOS contacte'),
+                onTap: () {
+                  initiateVoiceCall();
+                  sendSOSAlert();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.message, color: Colors.red),
+                title: const Text('Mesaj simplu + Alertă SOS contacte'),
+                onTap: () {
+                  sendSimpleMessage();
+                  sendSOSAlert();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         );
       },
     );
-
-    // Start a timer to initiate emergency response after countdown if no action
-    _confirmationTimer = Timer(Duration(seconds: 5), () {
-      if (_crashDetected) {
-        _initiateEmergencyResponse();
-        Navigator.of(context).pop();
-      }
-    });
   }
 
-  void _initiateEmergencyResponse() {
-    // Here you can add functionality to initiate an emergency call or send location
-    // For demonstration, we'll just print a message
-    print('Emergency response initiated.');
-    setState(() {
-      _crashDetected = false;
-    });
+  void initiateVideoCall() {
+    // Placeholder for video call implementation
+    print("Inițiere apel video către urgențe...");
   }
+
+  void initiateVoiceCall() {
+    // Placeholder for voice call implementation
+    print("Inițiere apel vocal către urgențe...");
+  }
+
+  void sendSimpleMessage() {
+    // Placeholder for sending a simple message to emergency contacts
+    print("Trimitere mesaj text către contacte de urgență...");
+  }
+
+  void sendSOSAlert() {
+    // Placeholder for sending an SOS alert, e.g., with current location
+    print("Trimitere alertă SOS către contacte de urgență...");
+  }
+}
+
+// New screen that opens on long press
+class NewTabScreen extends StatelessWidget {
+  const NewTabScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Crash Detection Demo')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Current Acceleration:',
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              _accelerationMagnitude.toStringAsFixed(2) + ' G',
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Text(
-              _crashDetected
-                  ? 'Crash Detected! Initiating Emergency Response...'
-                  : 'Monitoring...',
-              style: TextStyle(
-                fontSize: 18,
-                color: _crashDetected ? Colors.red : Colors.green,
-              ),
-            ),
-            SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _simulateCrash,
-              child: Text('Simulate Crash'),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: const Text('New Tab Screen'),
+      ),
+      body: const Center(
+        child: Text('This is a new tab opened by long-pressing the button'),
       ),
     );
   }
