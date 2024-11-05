@@ -32,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     bloodGroupController.text = bloodGroup;
     allergiesController.text = allergies;
   }
-//
+
   @override
   void dispose() {
     // Clean up controllers when the widget is disposed
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isEditing = !isEditing;
     });
   }
-
+//
   void saveProfile() {
     setState(() {
       name = nameController.text;
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isEditing = false; // Stop editing after save
     });
   }
-
+//
   @override
   Widget build(BuildContext context) {
     return Scaffold(
