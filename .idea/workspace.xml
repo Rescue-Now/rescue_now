@@ -96,7 +96,23 @@
       <option name="project" value="LOCAL" />
       <updated>1730842851566</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="05.11.2024 - 11:40 Fisa pacientului">
+      <option name="closed" value="true" />
+      <created>1730843807289</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1730843807289</updated>
+    </task>
+    <task id="LOCAL-00004" summary="05.11.2024 - 11:40 Fisa pacientului">
+      <option name="closed" value="true" />
+      <created>1730844039221</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1730844039221</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
