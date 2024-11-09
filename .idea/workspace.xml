@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf2c1bad-4b81-4565-8271-7d1a863ae667" name="Changes" comment="05.11.2024 - 11:40 Fisa pacientului" />
+    <list default="true" id="cf2c1bad-4b81-4565-8271-7d1a863ae667" name="Changes" comment="09.11.2024 - 09:50 Buton screen crash detection">
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/test/widget_test.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,12 +36,22 @@
     &quot;assignee&quot;: &quot;matei1603&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Rescue-Now/rescue_now.git&quot;,
-    &quot;accountId&quot;: &quot;4abae94f-cacb-4c11-8fd9-68d82412f2dc&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:Rescue-Now/rescue_now.git",
+    "accountId": "ec674ff5-3f3d-4480-97fc-b5814e70b1a6"
+  },
+  "recentNewPullRequestHead": {
+    "server": {
+      "useHttp": false,
+      "host": "github.com",
+      "port": null,
+      "suffix": null
+    },
+    "owner": "Rescue-Now",
+    "repository": "rescue_now"
   }
-}</component>
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -47,28 +59,45 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2oLgiHb6scSW2GQWOdcTIyBYSJy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Flutter.main.dart.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "matthew__mybranch",
+    "git-widget-placeholder": "#8 on crash__button__matei",
     "ignore.virus.scanning.warn.message": "true",
+    "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/tepfe/Desktop/rescue_now",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Problems",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "vcs.Git",
-    "show.migrate.to.gradle.popup": "false"
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -77,6 +106,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1730654395425</updated>
+      <workItem from="1731135111011" duration="3206000" />
     </task>
     <task id="LOCAL-00001" summary="03.11.2024 - test2">
       <option name="closed" value="true" />
@@ -126,10 +156,36 @@
       <option name="project" value="LOCAL" />
       <updated>1730844701176</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="09.11.2024 - 09:50 Buton screen crash detection">
+      <option name="closed" value="true" />
+      <created>1731138760778</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731138760778</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -140,7 +196,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="bertold_branch/bertold_branch" />
+                        <option value="origin/crash_button_matei" />
                       </list>
                     </value>
                   </entry>
@@ -155,6 +211,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="03.11.2024 - test2" />
     <MESSAGE value="05.11.2024 - 11:40 Fisa pacientului" />
-    <option name="LAST_COMMIT_MESSAGE" value="05.11.2024 - 11:40 Fisa pacientului" />
+    <MESSAGE value="09.11.2024 - 09:50 Buton screen crash detection" />
+    <option name="LAST_COMMIT_MESSAGE" value="09.11.2024 - 09:50 Buton screen crash detection" />
   </component>
 </project>
