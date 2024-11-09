@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:rescue_now_app/crash_detection.dart';
 import 'firebase_options.dart';
 import 'profile_screen.dart';
+// ignore_for_file: avoid_print
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

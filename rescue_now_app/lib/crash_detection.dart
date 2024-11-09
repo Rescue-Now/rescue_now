@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
+// ignore_for_file: avoid_print
 
 class CrashDetectionScreen extends StatefulWidget {
+  const CrashDetectionScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CrashDetectionScreenState createState() => _CrashDetectionScreenState();
 }
 
 class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
-  static const double crashThreshold = 3.0;
+  static const double crashThreshold = 45;
 
   double _accelerationMagnitude = 0.0;
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
@@ -30,27 +34,33 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     super.dispose();
   }
 
-  void _startAccelerometerListener() {
-    _accelerometerSubscription =
-        accelerometerEvents.listen((AccelerometerEvent event) {
-          double accelerationMagnitude = _calculateMagnitude(event);
-
-          // Check if the widget is still mounted before calling setState
-          if (mounted) {
-            setState(() {
-              _accelerationMagnitude = accelerationMagnitude;
-            });
-          }
-
-          if (accelerationMagnitude > crashThreshold && !_crashDetected) {
-            _crashDetected = true;
-            _showCrashDetectedDialog();
-          }
-        });
-  }
+  static double gravitationalConstant = 9.8;
 
   double _calculateMagnitude(AccelerometerEvent event) {
     return sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+  }
+
+  void _startAccelerometerListener() {
+    _accelerometerSubscription = accelerometerEventStream(
+      samplingPeriod: SensorInterval.normalInterval,
+    ).listen((AccelerometerEvent event) {
+      double accelerationMagnitude = _calculateMagnitude(event);
+      double adjustedMagnitude = (accelerationMagnitude - gravitationalConstant).abs();
+
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          _accelerationMagnitude = adjustedMagnitude;
+        });
+      }
+
+      if (adjustedMagnitude > crashThreshold && !_crashDetected) {
+        _crashDetected = true;
+        _showCrashDetectedDialog();
+        print(adjustedMagnitude);
+        _initiateEmergencyResponse();
+      }
+    });
   }
 
   void _showCrashDetectedDialog() {
@@ -109,7 +119,7 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
               style: TextStyle(fontSize: 20),
             ),
             Text(
-              _accelerationMagnitude.toStringAsFixed(2) + ' G',
+              '${_accelerationMagnitude.toStringAsFixed(2)} G',
               style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
@@ -134,20 +144,30 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
   }
 
   void _simulateCrash() {
-    double simulatedX = 3.5;
+    _accelerometerSubscription?.cancel();
+
+    double simulatedX = 95;
     double simulatedY = 0.0;
     double simulatedZ = 0.0;
     double simulatedMagnitude = sqrt(simulatedX * simulatedX + simulatedY * simulatedY + simulatedZ * simulatedZ);
+    double adjustedMagnitude = (simulatedMagnitude - gravitationalConstant).abs();
 
     if (mounted) {
       setState(() {
-        _accelerationMagnitude = simulatedMagnitude;
+        _accelerationMagnitude = adjustedMagnitude;
       });
     }
 
-    if (simulatedMagnitude > crashThreshold && !_crashDetected) {
+    if (adjustedMagnitude > crashThreshold && !_crashDetected) {
       _crashDetected = true;
       _showCrashDetectedDialog();
     }
+
+    // Restart the accelerometer listener after a few seconds
+    Future.delayed(Duration(seconds: 3), () {
+      if (mounted) {
+        _startAccelerometerListener();
+      }
+    });
   }
 }

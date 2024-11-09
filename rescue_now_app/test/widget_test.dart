@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:rescue_now_app/crash_detection.dart'; // Update this to the correct path if necessary
