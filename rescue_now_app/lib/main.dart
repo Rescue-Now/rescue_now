@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rescue_now_app/crash_detection.dart';
 import 'firebase_options.dart';
-import 'profile_screen.dart'; // Import the new profile screen file
+import 'profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(title: 'Home Page'),
     );
   }
-
 }
 
 class MyHomePage extends StatefulWidget {
@@ -45,6 +45,19 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Add the crash detection button on the left side
+        leading: IconButton(
+          icon: const Icon(Icons.warning),
+          tooltip: 'Open Crash Detection',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CrashDetectionScreen(),
+              ),
+            );
+          },
+        ),
         title: Text(widget.title),
         actions: [
           IconButton(
@@ -61,22 +74,27 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        child: GestureDetector(
-          onTap: () {
-            // Open the SOS menu when tapped
-            showEmergencyMenu(context);
-          },
-          onLongPress: () {
-            // Open a new tab (screen) when the button is long-pressed
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const NewTabScreen()),
-            );
-          },
-          child: ElevatedButton(
-            onPressed: null, // Leave this null because onTap is handled by GestureDetector
-            child: const Text('Open Tab'),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Open the SOS menu when tapped
+                showEmergencyMenu(context);
+              },
+              onLongPress: () {
+                // Open a new tab (screen) when the button is long-pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NewTabScreen()),
+                );
+              },
+              child: ElevatedButton(
+                onPressed: null,
+                child: const Text('Open Tab'),
+              ),
+            ),
+          ],
         ),
       ),
     );
