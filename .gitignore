@@ -30,7 +30,7 @@ rescue_now_app/.dart_tool/
 rescue_now_app/build/
 .pub-cache/
 .pub/
-/build/
+rescue_now_app/build/
 
 # Symbolication related
 app.*.symbols
