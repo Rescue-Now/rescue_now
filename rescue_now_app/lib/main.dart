@@ -4,6 +4,7 @@ import 'package:rescue_now_app/crash_detection.dart';
 import 'firebase_options.dart';
 import 'profile_screen.dart';
 // ignore_for_file: avoid_print
+import 'package:flutter_svg/flutter_svg.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Emergency SOS',
       theme: ThemeData(
         primarySwatch: Colors.red,
-       //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFEEA798)),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
@@ -30,6 +31,27 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+class ImageIcon extends StatelessWidget {
+  const ImageIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print('Image Icon tapped');
+      },
+      child: Container(
+        height: 40,  // Ensure proper size for interaction
+        width: 40,   // Ensure proper size for interaction
+        child: SvgPicture.asset(
+          'assets/info svg-2.svg', // Path to your image asset
+          fit: BoxFit.contain,  // Ensure proper fitting of the image within the Container
+        ),
+      ),
+    );
+  }
+}
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -41,14 +63,14 @@ class MyHomePage extends StatefulWidget {
 }
 
   class _MyHomePageState extends State<MyHomePage> {
-  final Color backgroundColor = Color(0xFFFFE5E5); // Replace with the exact background color from Penpot
+  final Color backgroundColor = Color(0xFFEEA798); // Replace with the exact background color from Penpot
   final Color buttonColor = Color(0xFFD9A4A4); // Replace with the SOS button color
   final Color textColor = Color(0xFF5A2F2F); // Replace with the icon/text color
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Color(0xFFEAA798),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
@@ -101,14 +123,11 @@ class MyHomePage extends StatefulWidget {
 
             // Center SOS Button
             GestureDetector(
-              onTap: () {
-                showEmergencyMenu(context);
-              },
               child: Container(
                 height: 120,
                 width: 120,
                 decoration: BoxDecoration(
-                  color: buttonColor,
+                  color: Color(0xFF885053),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -122,14 +141,8 @@ class MyHomePage extends StatefulWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.car_repair, color: Colors.white, size: 40),
-                      Text(
-                        'SOS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      SvgPicture.asset(
+                        'assets/sos_button.svg'
                       ),
                     ],
                   ),
@@ -138,29 +151,29 @@ class MyHomePage extends StatefulWidget {
             ),
 
             // Bottom Help Options Button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle Help Options action
-                  print('Help options pressed');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 10,
-                  ),
-                ),
-                child: Text(
-                  'Help options',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
+Padding(
+  padding: const EdgeInsets.only(bottom: 20.0),
+  child: ElevatedButton(
+    onPressed: () {
+      // Show emergency menu
+      showEmergencyMenu(context);
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color(0xFF885053),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 40,
+        vertical: 10,
+      ),
+    ),
+    child: Text(
+      'Help options',
+      style: TextStyle(color: Colors.white, fontSize: 16),
+    ),
+  ),
+),
           ],
         ),
       ),
@@ -184,53 +197,131 @@ class MyHomePage extends StatefulWidget {
       ),
     );
   }
-
-  // Show emergency menu (already implemented)
-  void showEmergencyMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+void showEmergencyMenu(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(50.0),  // More curved top-left corner
+        topRight: Radius.circular(50.0), // More curved top-right corner
       ),
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.video_call, color: Colors.red),
-                title: const Text('Apel video la urgențe'),
-                onTap: () {
-                  initiateVideoCall();
-                  sendSOSAlert();
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.call, color: Colors.red),
-                title: const Text('Apel vocal + Alertă SOS contacte'),
-                onTap: () {
-                  initiateVoiceCall();
-                  sendSOSAlert();
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.message, color: Colors.red),
-                title: const Text('Mesaj simplu + Alertă SOS contacte'),
-                onTap: () {
-                  sendSimpleMessage();
-                  sendSOSAlert();
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+    ),
+    builder: (BuildContext context) {
+      return Container(
+
+        decoration: const BoxDecoration(
+          color: Color(0xFF4C3527), // Background color of the popup
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(50.0),  // Must match the borderRadius in shape
+            topRight: Radius.circular(50.0), // Must match the borderRadius in shape
           ),
-        );
-      },
-    );
-  }
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Draggable Indicator
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+              child: Container(
+                width: 50,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.white, // Keep the draggable indicator white
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            // Emergency Buttons
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  _buildModalButton(
+                    label: 'Send Emergency Text',
+                    onTap: () {
+                      print('Send Text Emergency tapped');
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildModalButton(
+                    label: 'Voice Emergency Call',
+                    onTap: () {
+                      print('Voice Emergency Call tapped');
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildModalButton(
+                    label: 'Video Emergency Call',
+                    onTap: () {
+                      print('Video Emergency Call tapped');
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+           const SizedBox(height: 20),
+// Info Text
+const Padding(
+  padding: EdgeInsets.symmetric(horizontal: 20.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center, // Center content horizontally
+    children: [
+      ImageIcon(),
+      SizedBox(width: 8), // Space between the icon and text
+      Expanded(
+        child: Text(
+          'Initiating any kind of help request will also alert emergency contacts.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white, // Text color
+            fontSize: 14,        // Font size
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+const SizedBox(height: 20),
+
+          ],
+        ),
+      );
+    },
+  );
+}
+
+// Helper to build the individual buttons in the modal
+Widget _buildModalButton({
+  required String label,
+  required VoidCallback onTap,
+}) {
+  final Color cardColor = const Color(0xFF885053); // Button color
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    child: ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Less roundy corners
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 15), // Adjust height
+        fixedSize: const Size(277, 55), // Set fixed size for width and height
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  );
+}
+
 
   void initiateVideoCall() => print("Inițiere apel video către urgențe...");
   void initiateVoiceCall() => print("Inițiere apel vocal către urgențe...");
