@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rescue_now_app/crash_detection.dart';
-import 'firebase_options.dart';
-import 'profile_screen.dart';
+import 'package:rescue_now_app/src/crash_detection.dart';
+import 'src/firebase_options.dart';
+import 'src/profile_screen.dart';
+import 'theme/app_theme.dart';
 // ignore_for_file: avoid_print
 import 'package:flutter_svg/flutter_svg.dart'; 
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Emergency SOS',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.brown,
         //colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFEEA798)),
         useMaterial3: true,
       ),
@@ -40,12 +41,12 @@ class ImageIcon extends StatelessWidget {
       onTap: () {
         print('Image Icon tapped');
       },
-      child: Container(
+      child: SizedBox(
         height: 40,  // Ensure proper size for interaction
         width: 40,   // Ensure proper size for interaction
         child: SvgPicture.asset(
           'assets/info svg-2.svg', // Path to your image asset
-          fit: BoxFit.contain,  // Ensure proper fitting of the image within the Container
+          fit: BoxFit.contain,  // Ensure proper fitting of the image within the SizedBox
         ),
       ),
     );
@@ -63,18 +64,11 @@ class MyHomePage extends StatefulWidget {
 }
 
   class _MyHomePageState extends State<MyHomePage> {
-  final Color backgroundColor = Color(0xFFEEA798); // Replace with the exact background color from Penpot
-  final Color buttonColor = Color(0xFFD9A4A4); // Replace with the SOS button color
-  final Color textColor = Color(0xFF5A2F2F); // Replace with the icon/text color
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEAA798),
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      backgroundColor: AppTheme.colors.background, // !exemplu de color
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,7 +153,7 @@ Padding(
       showEmergencyMenu(context);
     },
     style: ElevatedButton.styleFrom(
-      backgroundColor: Color(0xFF885053),
+      backgroundColor: AppTheme.colors.menuButtons,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -170,7 +164,7 @@ Padding(
     ),
     child: Text(
       'Help options',
-      style: TextStyle(color: Colors.white, fontSize: 16),
+      style: TextStyle(color: AppTheme.colors.text, fontSize: 16), // !exemplu de color
     ),
   ),
 ),
@@ -190,9 +184,9 @@ Padding(
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, color: textColor, size: 40),
+          Icon(icon, color: AppTheme.colors.menuButtons, size: 40),
           const SizedBox(height: 8),
-          Text(label, style: TextStyle(color: textColor, fontSize: 14)),
+          Text(label, style: TextStyle(color: AppTheme.colors.menuButtons, fontSize: 14)),
         ],
       ),
     );
