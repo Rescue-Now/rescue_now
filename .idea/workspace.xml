@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cf2c1bad-4b81-4565-8271-7d1a863ae667" name="Changes" comment="09.11.2024 - 09:50 Buton screen crash detection">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rescue_now_app/lib/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/lib/profile_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/lib/src/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/lib/src/profile_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "matthew2",
+    "git-widget-placeholder": "mateiii",
     "ignore.virus.scanning.warn.message": "true",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
