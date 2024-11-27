@@ -30,7 +30,6 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
 
   @override
   void dispose() {
-    // Cancel the accelerometer subscription
     _accelerometerSubscription?.cancel();
     _confirmationTimer?.cancel();
     super.dispose();
@@ -49,7 +48,6 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
       double accelerationMagnitude = _calculateMagnitude(event);
       double adjustedMagnitude = (accelerationMagnitude - gravitationalConstant).abs();
 
-      // Check if the widget is still mounted before calling setState
       if (mounted) {
         setState(() {
           _accelerationMagnitude = adjustedMagnitude;
@@ -90,7 +88,6 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
       },
     );
 
-    // Start a timer to initiate emergency response after countdown if no action
     _confirmationTimer = Timer(Duration(seconds: 5), () {
       if (_crashDetected && mounted) {
         _initiateEmergencyResponse();
