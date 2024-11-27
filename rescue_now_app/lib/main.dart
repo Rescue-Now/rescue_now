@@ -42,11 +42,11 @@ class ImageIcon extends StatelessWidget {
         print('Image Icon tapped');
       },
       child: SizedBox(
-        height: 40,  // Ensure proper size for interaction
-        width: 40,   // Ensure proper size for interaction
+        height: 40,  
+        width: 40,   
         child: SvgPicture.asset(
-          'assets/info svg-2.svg', // Path to your image asset
-          fit: BoxFit.contain,  // Ensure proper fitting of the image within the SizedBox
+          'assets/info svg-2.svg', 
+          fit: BoxFit.contain,  
         ),
       ),
     );
@@ -65,42 +65,60 @@ class MyHomePage extends StatefulWidget {
 
   class _MyHomePageState extends State<MyHomePage> {
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.colors.background, // !exemplu de color
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Top Row
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildIconWithLabel(
-                    icon: Icons.contacts,
-                    label: 'Contacts',
-                    onTap: () {
-                      // Navigate to Contacts screen or handle the action
-                      print('Contacts tapped');
-                    },
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: AppTheme.colors.background,
+    body: SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start, 
+              children: [
+                const SizedBox(width: 16), 
+                _buildIconWithLabel(
+                  icon: SvgPicture.asset(
+                    'assets/emergency-contacts.svg',
+                    height: 40,
+                    width: 40,
                   ),
-                  _buildIconWithLabel(
-                    icon: Icons.car_crash,
-                    label: 'Crash test',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CrashDetectionScreen(),
-                        ),
-                      );
-                    },
+                  label: 'Contacts',
+                  onTap: () {
+                    print('Contacts tapped');
+                  },
+                ),
+                
+                const SizedBox(width: 24), 
+
+                _buildIconWithLabel(
+                  icon: SvgPicture.asset(
+                    'assets/crash.svg',
+                    height: 40,
+                    width: 40,
                   ),
-                  _buildIconWithLabel(
-                    icon: Icons.person,
+                  label: 'Crash test',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CrashDetectionScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const Spacer(), 
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0), 
+                  child: _buildIconWithLabel(
+                    icon: SvgPicture.asset(
+                      'assets/profile.svg',
+                      color: AppTheme.colors.menuButtons,
+                      height: 40,
+                      width: 40,
+                    ),
                     label: 'Profile',
                     onTap: () {
                       Navigator.push(
@@ -111,17 +129,16 @@ class MyHomePage extends StatefulWidget {
                       );
                     },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-
-            // Center SOS Button
+          ),
             GestureDetector(
               child: Container(
-                height: 120,
+                height: 120,  
                 width: 120,
                 decoration: BoxDecoration(
-                  color: Color(0xFF885053),
+                  color: AppTheme.colors.primary,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -143,89 +160,108 @@ class MyHomePage extends StatefulWidget {
                 ),
               ),
             ),
-
-            // Bottom Help Options Button
 Padding(
   padding: const EdgeInsets.only(bottom: 20.0),
-  child: ElevatedButton(
-    onPressed: () {
-      // Show emergency menu
-      showEmergencyMenu(context);
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppTheme.colors.menuButtons,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 40,
-        vertical: 10,
-      ),
+  child: Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20), 
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3), 
+          spreadRadius: 2, 
+          blurRadius: 6,  
+          offset: Offset(0, 3), 
+        ),
+      ],
     ),
-    child: Text(
-      'Help options',
-      style: TextStyle(color: AppTheme.colors.text, fontSize: 16), // !exemplu de color
+    child: ElevatedButton(
+      onPressed: () {
+        showEmergencyMenu(context);
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppTheme.colors.menuButtons,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), 
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+      ),
+      child: Text(
+        'Help options',
+        style: TextStyle(
+          color: AppTheme.colors.text,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     ),
   ),
 ),
+
           ],
         ),
       ),
     );
   }
-
-  // Helper function to build an icon with label
   Widget _buildIconWithLabel({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Icon(icon, color: AppTheme.colors.menuButtons, size: 40),
-          const SizedBox(height: 8),
-          Text(label, style: TextStyle(color: AppTheme.colors.menuButtons, fontSize: 14)),
-        ],
-      ),
-    );
-  }
+  required Widget icon, 
+  required String label,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Column(
+      children: [
+        icon, 
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppTheme.colors.menuButtons,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 void showEmergencyMenu(BuildContext context) {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(50.0),  // More curved top-left corner
-        topRight: Radius.circular(50.0), // More curved top-right corner
+        topLeft: Radius.circular(50.0),  
+        topRight: Radius.circular(50.0), 
       ),
     ),
     builder: (BuildContext context) {
       return Container(
 
-        decoration: const BoxDecoration(
-          color: Color(0xFF4C3527), // Background color of the popup
+        decoration: BoxDecoration(
+          color: AppTheme.colors.menuButtons, 
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(50.0),  // Must match the borderRadius in shape
-            topRight: Radius.circular(50.0), // Must match the borderRadius in shape
+            topLeft: Radius.circular(50.0),  
+            topRight: Radius.circular(50.0), 
           ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Draggable Indicator
             Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
               child: Container(
                 width: 50,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: Colors.white, // Keep the draggable indicator white
+                  color: AppTheme.colors.text, 
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            // Emergency Buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -255,22 +291,28 @@ void showEmergencyMenu(BuildContext context) {
               ),
             ),
            const SizedBox(height: 20),
-// Info Text
-const Padding(
-  padding: EdgeInsets.symmetric(horizontal: 20.0),
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 20.0),
   child: Row(
-    mainAxisAlignment: MainAxisAlignment.center, // Center content horizontally
+    mainAxisSize: MainAxisSize.min, 
+    crossAxisAlignment: CrossAxisAlignment.center, 
     children: [
-      ImageIcon(),
-      SizedBox(width: 8), // Space between the icon and text
+      FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          height: 40, 
+          width: 40,  
+          child: SvgPicture.asset(
+            'assets/info svg-2.svg',
+          ),
+        ),
+      ),
+      const SizedBox(width: 2), 
       Expanded(
         child: Text(
           'Initiating any kind of help request will also alert emergency contacts.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white, // Text color
-            fontSize: 14,        // Font size
-          ),
+          style: TextStyle(color: AppTheme.colors.text, fontSize: 16, fontWeight: FontWeight.bold)
         ),
       ),
     ],
@@ -285,13 +327,11 @@ const SizedBox(height: 20),
     },
   );
 }
-
-// Helper to build the individual buttons in the modal
 Widget _buildModalButton({
   required String label,
   required VoidCallback onTap,
 }) {
-  final Color cardColor = const Color(0xFF885053); // Button color
+  final Color cardColor = AppTheme.colors.primary; 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: ElevatedButton(
@@ -299,17 +339,14 @@ Widget _buildModalButton({
       style: ElevatedButton.styleFrom(
         backgroundColor: cardColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Less roundy corners
+          borderRadius: BorderRadius.circular(12), 
         ),
-        padding: const EdgeInsets.symmetric(vertical: 15), // Adjust height
-        fixedSize: const Size(277, 55), // Set fixed size for width and height
+        padding: const EdgeInsets.symmetric(vertical: 15), 
+        fixedSize: const Size(277, 55), 
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+        style: TextStyle(color: AppTheme.colors.text, fontSize: 18,
         ),
       ),
     ),
@@ -325,9 +362,6 @@ Widget _buildModalButton({
       print("Trimitere alertă SOS către contacte de urgență...");
 }
 
-
-
-// New screen that opens on long press
 class NewTabScreen extends StatelessWidget {
   const NewTabScreen({super.key});
 
