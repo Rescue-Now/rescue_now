@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
+
+import '../theme/app_theme.dart';
 // ignore_for_file: avoid_print
 
 class CrashDetectionScreen extends StatefulWidget {
@@ -106,39 +108,91 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     }
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Crash Detection Demo')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Current Acceleration:',
-              style: TextStyle(fontSize: 20),
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Container(
+              color: AppTheme.colors.background,
             ),
-            Text(
-              '${_accelerationMagnitude.toStringAsFixed(2)} G',
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+          ),
+          // Icon at the top
+          Positioned(
+            top: 150,
+            left: 0,
+            right: 0,
+            child: Icon(Icons.car_crash, size: 120, color: AppTheme.colors.primary),
+          ),
+          // Acceleration data and status
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${_accelerationMagnitude.toStringAsFixed(2)} G',
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.colors.menuButtons,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _crashDetected ? 'Crash Detected!' : 'Monitoring...',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: _crashDetected ? Colors.red : Colors.black,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            Text(
-              _crashDetected
-                  ? 'Crash Detected! Initiating Emergency Response...'
-                  : 'Monitoring...',
-              style: TextStyle(
-                fontSize: 18,
-                color: _crashDetected ? Colors.red : Colors.green,
+          ),
+          // Simulate Crash Button
+          Positioned(
+            bottom: 70,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.colors.menuButtons,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 15,
+                  ),
+                ),
+                onPressed: _simulateCrash,
+                child: Text(
+                  'Simulate Crash',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.colors.text,
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _simulateCrash,
-              child: Text('Simulate Crash'),
+          ),
+          // Back button
+          Positioned(
+            top: 60,
+            left: 15,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF5D4037)),
+              iconSize: 40,
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
