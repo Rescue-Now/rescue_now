@@ -1,9 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -73,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back),
                       color: AppTheme.colors.menuButtons,
-                      iconSize: 32,
+                      iconSize: 40,
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -81,14 +83,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Align(
                     alignment: Alignment.center,
-                    child: Text(
-                      'Profile',
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 6),
+                        Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontFamily: 'Source Sans Pro',
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.colors.menuButtons,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -226,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
+                      color: Colors.black.withAlpha((0.4 * 255).toInt()),
                       offset: const Offset(0, 6),
                       blurRadius: 12,
                     ),

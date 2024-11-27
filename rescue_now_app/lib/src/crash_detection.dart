@@ -162,7 +162,7 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
-                    vertical: 15,
+                    vertical: 16,
                   ),
                 ),
                 onPressed: _simulateCrash,
@@ -179,10 +179,10 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
           ),
           // Back button
           Positioned(
-            top: 60,
+            top: 80,
             left: 15,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF5D4037)),
+              icon: Icon(Icons.arrow_back, color: AppTheme.colors.menuButtons),
               iconSize: 40,
               onPressed: () {
                 Navigator.pop(context);
