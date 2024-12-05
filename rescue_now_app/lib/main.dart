@@ -6,6 +6,8 @@ import 'src/profile_screen.dart';
 import 'theme/app_theme.dart';
 // ignore_for_file: avoid_print
 import 'package:flutter_svg/flutter_svg.dart'; 
+import 'dart:async';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,9 @@ void main() async {
   );
   runApp(const MyApp());
 }
+
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -64,6 +69,47 @@ class MyHomePage extends StatefulWidget {
 }
 
   class _MyHomePageState extends State<MyHomePage> {
+
+double _buttonSize = 120.0; 
+  Timer? _timer;
+  bool _isHolding = false;
+
+  void _onLongPressStart() {
+    setState(() {
+      _isHolding = true;
+      _buttonSize = 140.0; 
+    });
+
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (_isHolding) {
+        _showEmergencyMessage();
+      }
+    });
+  }
+
+  void _onLongPressEnd() {
+    setState(() {
+      _isHolding = false;
+      _buttonSize = 120.0; 
+    });
+    _timer?.cancel();
+  }
+
+  void _showEmergencyMessage() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Emergency"),
+        content: const Text("Calling Emergency Something..."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
 
  @override
 Widget build(BuildContext context) {
@@ -133,33 +179,33 @@ Widget build(BuildContext context) {
               ],
             ),
           ),
-            GestureDetector(
-              child: Container(
-                height: 120,  
-                width: 120,
-                decoration: BoxDecoration(
-                  color: AppTheme.colors.primary,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/sos_button.svg'
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            
+GestureDetector(
+  onLongPressStart: (_) => _onLongPressStart(),
+  onLongPressEnd: (_) => _onLongPressEnd(),
+  child: AnimatedContainer(
+    duration: const Duration(milliseconds: 200),
+    height: _buttonSize,
+    width: _buttonSize,
+    decoration: BoxDecoration(
+      color: AppTheme.colors.primary,  
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Center(
+      child: SvgPicture.asset(
+        'assets/sos_button.svg',
+      ),
+    ),
+  ),
+),
+
 Padding(
   padding: const EdgeInsets.only(bottom: 20.0),
   child: Container(
@@ -362,18 +408,3 @@ Widget _buildModalButton({
       print("Trimitere alertă SOS către contacte de urgență...");
 }
 
-class NewTabScreen extends StatelessWidget {
-  const NewTabScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('New Tab Screen'),
-      ),
-      body: const Center(
-        child: Text('This is a new tab opened by long-pressing the button'),
-      ),
-    );
-  }
-}
