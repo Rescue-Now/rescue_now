@@ -70,14 +70,14 @@ class MyHomePage extends StatefulWidget {
 
   class _MyHomePageState extends State<MyHomePage> {
 
-double _buttonSize = 120.0; 
+double _buttonSize = 145.0; 
   Timer? _timer;
   bool _isHolding = false;
 
   void _onLongPressStart() {
     setState(() {
       _isHolding = true;
-      _buttonSize = 140.0; 
+      _buttonSize = 160.0; 
     });
 
     _timer = Timer(const Duration(seconds: 3), () {
@@ -90,7 +90,7 @@ double _buttonSize = 120.0;
   void _onLongPressEnd() {
     setState(() {
       _isHolding = false;
-      _buttonSize = 120.0; 
+      _buttonSize = 145.0; 
     });
     _timer?.cancel();
   }
