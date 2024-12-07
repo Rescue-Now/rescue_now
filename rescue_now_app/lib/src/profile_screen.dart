@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rescue_now_app/src/patient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../theme/app_theme.dart';
-
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -10,54 +12,102 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String name = 'Antonel';
-  int age = 21;
-  String bloodGroup = 'A-';
-  String allergies = 'oua, parul de pisica';
-
+  late Patient patient;
   bool isEditing = false;
+  bool isLoading = true;
 
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController bloodGroupController = TextEditingController();
   final TextEditingController allergiesController = TextEditingController();
+  final TextEditingController conditionsController = TextEditingController();
+  final TextEditingController medicalHistoryController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = name;
-    ageController.text = age.toString();
-    bloodGroupController.text = bloodGroup;
-    allergiesController.text = allergies;
+    _loadPatientData();
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     ageController.dispose();
     bloodGroupController.dispose();
     allergiesController.dispose();
+    conditionsController.dispose();
+    medicalHistoryController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadPatientData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? patientJson = prefs.getString('patientData');
+
+    if (patientJson != null) {
+      patient = Patient.fromJson(json.decode(patientJson));
+    } else {
+      patient = Patient(
+        id: '1',
+        firstName: 'Antonel',
+        lastName: 'Ionescu',
+        age: 21,
+        bloodGroup: 'A-',
+        knownAllergies: ['Eggs', 'Cat hair'],
+        conditions: ['Diabetes'],
+        medicalHistory: ['Appendectomy'],
+      );
+    }
+
+    firstNameController.text = patient.firstName;
+    lastNameController.text = patient.lastName;
+    ageController.text = patient.age.toString();
+    bloodGroupController.text = patient.bloodGroup;
+    allergiesController.text = patient.knownAllergies.join(', ');
+    conditionsController.text = patient.conditions.join(', ');
+    medicalHistoryController.text = patient.medicalHistory.join(', ');
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _savePatientData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    patient.firstName = firstNameController.text;
+    patient.lastName = lastNameController.text;
+    patient.age = int.tryParse(ageController.text) ?? patient.age;
+    patient.bloodGroup = bloodGroupController.text;
+    patient.knownAllergies = allergiesController.text.split(',').map((e) => e.trim()).toList();
+    patient.conditions = conditionsController.text.split(',').map((e) => e.trim()).toList();
+    patient.medicalHistory = medicalHistoryController.text.split(',').map((e) => e.trim()).toList();
+
+    await prefs.setString('patientData', json.encode(patient.toJson()));
   }
 
   void toggleEditMode() {
     setState(() {
       isEditing = !isEditing;
-      if (!isEditing) saveProfile();
-    });
-  }
-
-  void saveProfile() {
-    setState(() {
-      name = nameController.text;
-      age = int.tryParse(ageController.text) ?? age;
-      bloodGroup = bloodGroupController.text;
-      allergies = allergiesController.text;
+      if (!isEditing) {
+        _savePatientData();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: AppTheme.colors.background,
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.colors.background,
       body: SafeArea(
@@ -112,25 +162,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             Center(
               child: isEditing
-                  ? SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: nameController,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Source Sans Pro',
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.colors.menuButtons,
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: TextField(
+                      controller: firstNameController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Source Sans Pro',
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.colors.menuButtons,
+                      ),
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        hintText: 'First Name',
+                      ),
+                    ),
                   ),
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    hintText: 'Enter Name',
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: TextField(
+                      controller: lastNameController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Source Sans Pro',
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.colors.menuButtons,
+                      ),
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        hintText: 'Last Name',
+                      ),
+                    ),
                   ),
-                ),
+                ],
               )
                   : Text(
-                name,
+                '${patient.firstName} ${patient.lastName}',
                 style: TextStyle(
                   fontFamily: 'Source Sans Pro',
                   fontSize: 24,
@@ -140,115 +211,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 children: [
-                  ProfileDetail(
-                    label: "Age",
-                    value: isEditing
-                        ? TextField(
-                      controller: ageController,
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                      keyboardType: TextInputType.number,
-                    )
-                        : Text(
-                      age.toString(),
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                    ),
-                  ),
+                  _buildEditableField('Age', ageController, isNumber: true),
                   const SizedBox(height: 20),
-                  ProfileDetail(
-                    label: "Blood Type",
-                    value: isEditing
-                        ? TextField(
-                      controller: bloodGroupController,
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                    )
-                        : Text(
-                      bloodGroup,
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                    ),
-                  ),
+                  _buildEditableField('Blood Type', bloodGroupController),
                   const SizedBox(height: 20),
-                  ProfileDetail(
-                    label: "Allergies",
-                    value: isEditing
-                        ? TextField(
-                      controller: allergiesController,
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                    )
-                        : Text(
-                      allergies,
-                      style: TextStyle(
-                        fontFamily: 'Source Sans Pro',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.colors.menuButtons,
-                      ),
-                    ),
-                  ),
+                  _buildEditableField('Allergies', allergiesController),
+                  const SizedBox(height: 20),
+                  _buildEditableField('Conditions', conditionsController),
+                  const SizedBox(height: 20),
+                  _buildEditableField('Medical History', medicalHistoryController),
                 ],
               ),
             ),
-            const Spacer(),
-            // Rounded Edit Profile Button
             Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.colors.menuButtons,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(0, 6),
-                      blurRadius: 12,
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: toggleEditMode,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.colors.menuButtons,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                    minimumSize: const Size(144.25, 48),
+              child: ElevatedButton(
+                onPressed: toggleEditMode,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.colors.menuButtons,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Text(
-                    isEditing ? 'Save Changes' : 'Edit',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                ),
+                child: Text(
+                  isEditing ? 'Save Changes' : 'Edit',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -259,33 +253,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-}
 
-class ProfileDetail extends StatelessWidget {
-  final String label;
-  final Widget value;
-
-  const ProfileDetail({
-    super.key,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildEditableField(String label, TextEditingController controller, {bool isNumber = false}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "$label: ",
-          style: TextStyle(
-            fontFamily: 'Source Sans Pro',
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.colors.menuButtons,
+        Expanded(
+          flex: 2,
+          child: Text(
+            "$label: ",
+            style: TextStyle(
+              fontFamily: 'Source Sans Pro',
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.colors.menuButtons,
+            ),
           ),
         ),
-        Expanded(child: value),
+        Expanded(
+          flex: 3,
+          child: isEditing
+              ? TextField(
+            controller: controller,
+            keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+            style: TextStyle(
+              fontFamily: 'Source Sans Pro',
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.colors.menuButtons,
+            ),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            ),
+          )
+              : Text(
+            controller.text,
+            style: TextStyle(
+              fontFamily: 'Source Sans Pro',
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.colors.menuButtons,
+            ),
+            maxLines: null,
+            softWrap: true,
+          ),
+        ),
       ],
     );
   }

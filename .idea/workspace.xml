@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf2c1bad-4b81-4565-8271-7d1a863ae667" name="Changes" comment="09.11.2024 - 09:50 Buton screen crash detection">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/ios/Podfile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rescue_now_app/lib/src/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/lib/src/profile_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rescue_now_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/rescue_now_app/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +32,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="fisa-pacientului" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -60,7 +66,9 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2oLgiHb6scSW2GQWOdcTIyBYSJy" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -70,10 +78,11 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "mateiii",
+    "git-widget-placeholder": "fisa__pacientului",
     "ignore.virus.scanning.warn.message": "true",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
@@ -91,6 +100,17 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/rescue_now_app/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Flutter.main.dart" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -108,6 +128,7 @@
       <option name="presentableId" value="Default" />
       <updated>1730654395425</updated>
       <workItem from="1731135111011" duration="3206000" />
+      <workItem from="1733581996962" duration="7477000" />
     </task>
     <task id="LOCAL-00001" summary="03.11.2024 - test2">
       <option name="closed" value="true" />
