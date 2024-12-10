@@ -106,3 +106,7 @@ flutter:
     - assets/profile_pic.jpg  # Update this path if your file has a different name or location
     - assets/info svg-2.svg
     - assets/sos_button.svg
+    - assets/car_crash_icon.svg
+    - assets/emergency-contacts.svg
+    - assets/crash.svg
+    - assets/profile.svg
