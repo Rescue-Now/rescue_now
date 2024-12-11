@@ -49,6 +49,7 @@ dependencies:
   firebase_database: ^11.1.4
   flutter_svg: ^2.0.14
   shared_preferences: ^2.1.0
+  geolocator: ^13.0.2
 
 dev_dependencies:
   flutter_test:

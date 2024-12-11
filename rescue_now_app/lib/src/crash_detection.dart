@@ -46,7 +46,8 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
       samplingPeriod: SensorInterval.normalInterval,
     ).listen((AccelerometerEvent event) {
       double accelerationMagnitude = _calculateMagnitude(event);
-      double adjustedMagnitude = (accelerationMagnitude - gravitationalConstant).abs();
+      double adjustedMagnitude =
+          (accelerationMagnitude - gravitationalConstant).abs();
 
       if (mounted) {
         setState(() {
@@ -105,7 +106,7 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     }
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -121,7 +122,8 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
             top: 150,
             left: 0,
             right: 0,
-            child: Icon(Icons.car_crash, size: 120, color: AppTheme.colors.primary),
+            child: Icon(Icons.car_crash,
+                size: 120, color: AppTheme.colors.primary),
           ),
           // Acceleration data and status
           Center(
@@ -200,8 +202,11 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     double simulatedX = 95;
     double simulatedY = 0.0;
     double simulatedZ = 0.0;
-    double simulatedMagnitude = sqrt(simulatedX * simulatedX + simulatedY * simulatedY + simulatedZ * simulatedZ);
-    double adjustedMagnitude = (simulatedMagnitude - gravitationalConstant).abs();
+    double simulatedMagnitude = sqrt(simulatedX * simulatedX +
+        simulatedY * simulatedY +
+        simulatedZ * simulatedZ);
+    double adjustedMagnitude =
+        (simulatedMagnitude - gravitationalConstant).abs();
 
     if (mounted) {
       setState(() {

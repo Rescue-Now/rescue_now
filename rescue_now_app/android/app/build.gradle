@@ -11,6 +11,7 @@ plugins {
 android {
     namespace = "com.example.rescue_now_app"
     compileSdk = flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
