@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
-// import 'package:rescue_now_app/src/location_management.dart';
+import 'package:rescue_now_app/src/location_management.dart';
 import 'src/firebase_options.dart';
 import 'src/profile_screen.dart';
 import 'theme/app_theme.dart';
@@ -78,8 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _buttonSize = 160.0;
     });
 
-    _timer = Timer(const Duration(seconds: 3), () {
+    _timer = Timer(const Duration(seconds: 1), () {
       if (_isHolding) {
+        sendSOSAlert();
         _showEmergencyMessage();
       }
     });
@@ -193,6 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
+                // butonul de sos
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/sos_button.svg',
@@ -307,24 +308,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     _buildModalButton(
                       label: 'Send Emergency Text',
-                      onTap: () async {
-                        Position? position = await Geolocator.getLastKnownPosition();
-                        print(position);
-                        print('Send Text Emergency tapped');
-                        Navigator.pop(context);
+                      onTap: () {
+                          sendSOSAlert();
+                          textEmergencyContacts();
+                          Navigator.pop(context);
                       },
                     ),
                     _buildModalButton(
                       label: 'Voice Emergency Call',
                       onTap: () {
-                        print('Voice Emergency Call tapped');
+                        sendSOSAlert();
+                        initiateVoiceCall();
                         Navigator.pop(context);
                       },
                     ),
                     _buildModalButton(
                       label: 'Video Emergency Call',
                       onTap: () {
-                        print('Video Emergency Call tapped');
+                        sendSOSAlert();
+                        initiateVideoCall();
                         Navigator.pop(context);
                       },
                     ),
@@ -397,13 +399,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void initiateVideoCall() => print("Inițiere apel video către urgențe...");
+  void textEmergencyContacts() {
+    print("Trimitere mesaj text către contacte de urgență...");
+  }
 
-  void initiateVoiceCall() => print("Inițiere apel vocal către urgențe...");
+  // Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele
+  void initiateTextConversation() {
+    print('Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele');
+  }
 
-  void sendSimpleMessage() =>
-      print("Trimitere mesaj text către contacte de urgență...");
+  void initiateVoiceCall() {
+    print("Inițiere apel vocal către urgențe...");
+  }
 
-  void sendSOSAlert() =>
-      print("Trimitere alertă SOS către contacte de urgență...");
+  void initiateVideoCall() {
+    print("Inițiere apel video către urgențe...");
+  }
+
+  // trimite locatia si detaliile pacientului la server
+  void sendSOSAlert() async {
+    getAndSendLocation();
+  }
 }

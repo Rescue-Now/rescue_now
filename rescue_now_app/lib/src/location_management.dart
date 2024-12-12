@@ -1,4 +1,10 @@
+import 'dart:ffi';
+import 'dart:io';
+
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+//ca sa poti sa faci json si inapoi
+// import 'dart:convert';
 
 /// Determine the current position of the device.
 ///
@@ -39,4 +45,22 @@ Future<Position> determinePosition() async {
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
   return await Geolocator.getCurrentPosition();
+}
+
+Future<http.Response> sendLocationToServer(double latitude, double longitude) async {
+  final queryParams = {
+    'lat' : latitude.toString(),
+    'long' : longitude.toString()
+  };
+  final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
+
+  return http.put(uri);
+}
+
+void getAndSendLocation() async {
+  Position position = await determinePosition();
+  print(position);
+  final response = await sendLocationToServer(position.latitude, position.longitude);
+  print('response de la server');
+  print(response);
 }
