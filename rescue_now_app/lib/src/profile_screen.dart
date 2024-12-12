@@ -43,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadPatientData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? patientJson = prefs.getString('patientData');
+    SharedPreferencesAsync prefs = SharedPreferencesAsync();
+    String? patientJson = await prefs.getString('patientData');
 
     if (patientJson != null) {
       patient = Patient.fromJson(json.decode(patientJson));
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _savePatientData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferencesAsync prefs = SharedPreferencesAsync();
 
     patient.firstName = firstNameController.text;
     patient.lastName = lastNameController.text;
