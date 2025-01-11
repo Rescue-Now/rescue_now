@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   sensors_plus: ^6.1.0
+  url_launcher: ^6.1.8
 
 
 
@@ -62,6 +63,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -112,3 +119,4 @@ flutter:
     - assets/emergency-contacts.svg
     - assets/crash.svg
     - assets/profile.svg
+    - assets/logo.png
