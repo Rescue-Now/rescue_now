@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 //ca sa poti sa faci json si inapoi
