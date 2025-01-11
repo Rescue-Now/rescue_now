@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
 import 'package:rescue_now_app/src/location_management.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
 import 'src/profile_screen.dart';
 import 'theme/app_theme.dart';
@@ -70,6 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
   double _buttonSize = 145.0;
   Timer? _timer;
   bool _isHolding = false;
+
+  void sendSOSAlert() {
+    print("SOS alert has been sent!");
+  }
 
   void _onLongPressStart() {
     setState(() {
@@ -271,6 +276,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showEmergencyMenu(BuildContext context) {
+    const String emergencyPhoneNumber = '0760068619';
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -310,7 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Send Emergency Text',
                       onTap: () {
                           sendSOSAlert();
-                          textEmergencyContacts();
+                          textEmergencyContacts(emergencyPhoneNumber);
                           Navigator.pop(context);
                       },
                     ),
@@ -318,7 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Voice Emergency Call',
                       onTap: () {
                         sendSOSAlert();
-                        initiateVoiceCall();
+                        initiateVoiceCall(emergencyPhoneNumber);
                         Navigator.pop(context);
                       },
                     ),
@@ -326,7 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Video Emergency Call',
                       onTap: () {
                         sendSOSAlert();
-                        initiateVideoCall();
+                        initiateVideoCall(emergencyPhoneNumber);
                         Navigator.pop(context);
                       },
                     ),
@@ -399,8 +406,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void textEmergencyContacts() {
-    print("Trimitere mesaj text către contacte de urgență...");
+  void textEmergencyContacts(String phoneNumber) async {
+    final Uri smsUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+      query: 'body=This is an emergency! Please help.',
+    );
+
+    if (await canLaunchUrl(smsUri)) {
+      await launchUrl(smsUri);
+    } else {
+      print('Could not launch SMS');
+    }
   }
 
   // Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele
@@ -408,16 +425,29 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele');
   }
 
-  void initiateVoiceCall() {
-    print("Inițiere apel vocal către urgențe...");
+  void initiateVoiceCall(String phoneNumber) async {
+    final Uri telUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+
+    if (await canLaunchUrl(telUri)) {
+      await launchUrl(telUri);
+    } else {
+      print('Could not launch Phone Call');
+    }
   }
 
-  void initiateVideoCall() {
-    print("Inițiere apel video către urgențe...");
-  }
+  void initiateVideoCall(String phoneNumber) async {
+    final Uri videoCallUri = Uri(
+      scheme: 'facetime',
+      path: phoneNumber, // Pentru iOS se poate folosi FaceTime.
+    );
 
-  // trimite locatia si detaliile pacientului la server
-  void sendSOSAlert() async {
-    getAndSendLocation();
+    if (await canLaunchUrl(videoCallUri)) {
+      await launchUrl(videoCallUri);
+    } else {
+      print('Could not launch Video Call');
+    }
   }
 }
