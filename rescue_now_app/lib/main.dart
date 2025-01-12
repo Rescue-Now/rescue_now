@@ -76,6 +76,20 @@ class _MyHomePageState extends State<MyHomePage> {
     print("SOS alert has been sent!");
   }
 
+  Future<void> callEmergencyNumber() async {
+    const String emergencyNumber = '0760068619';
+    final Uri telUri = Uri(
+      scheme: 'tel',
+      path: emergencyNumber,
+    );
+
+    if (await canLaunchUrl(telUri)) {
+      await launchUrl(telUri);
+    } else {
+      print('Could not launch Phone Call to $emergencyNumber');
+    }
+  }
+
   void _onLongPressStart() {
     setState(() {
       _isHolding = true;
@@ -86,6 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_isHolding) {
         sendSOSAlert();
         _showEmergencyMessage();
+        callEmergencyNumber();
       }
     });
   }
@@ -103,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Emergency"),
-        content: const Text("Calling Emergency Something..."),
+        content: const Text("Calling Authorities..."),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
