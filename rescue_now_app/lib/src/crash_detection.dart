@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 
 import '../theme/app_theme.dart';
@@ -64,6 +65,20 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     });
   }
 
+  Future<void> callEmergencyNumber() async {
+    const String emergencyNumber = '0760068619';
+    final Uri telUri = Uri(
+      scheme: 'tel',
+      path: emergencyNumber,
+    );
+
+    if (await canLaunchUrl(telUri)) {
+      await launchUrl(telUri);
+    } else {
+      print('Could not launch Phone Call to $emergencyNumber');
+    }
+  }
+
   void _showCrashDetectedDialog() {
     showDialog(
       context: context,
@@ -100,6 +115,7 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
   void _initiateEmergencyResponse() {
     if (mounted) {
       print('Emergency response initiated.');
+      callEmergencyNumber();
       setState(() {
         _crashDetected = false;
       });
@@ -217,6 +233,7 @@ class _CrashDetectionScreenState extends State<CrashDetectionScreen> {
     if (adjustedMagnitude > crashThreshold && !_crashDetected) {
       _crashDetected = true;
       _showCrashDetectedDialog();
+      callEmergencyNumber();
     }
 
     // Restart the accelerometer listener after a few seconds
