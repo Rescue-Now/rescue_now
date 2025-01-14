@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:rescue_now_app/src/patient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //ca sa poti sa faci json si inapoi
 // import 'dart:convert';
 
@@ -44,10 +48,11 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
-Future<http.Response> sendLocationToServer(double latitude, double longitude) async {
+Future<http.Response> sendLocationToServer(double latitude, double longitude, String patientId) async {
   final queryParams = {
     'lat' : latitude.toString(),
-    'long' : longitude.toString()
+    'long' : longitude.toString(),
+    'patientID' : patientId
   };
   final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
 
@@ -58,7 +63,11 @@ Future<http.Response> sendLocationToServer(double latitude, double longitude) as
 void getAndSendLocation() async {
   Position position = await determinePosition();
   print(position);
-  final response = await sendLocationToServer(position.latitude, position.longitude);
+  SharedPreferencesAsync prefs = SharedPreferencesAsync();
+  String? patientJson = await prefs.getString('patientData');
+  final Patient patient = Patient.fromJson(json.decode(patientJson!));
+
+  final response = await sendLocationToServer(position.latitude, position.longitude,patient.id);
   print('response de la server');
   print(response);
 }

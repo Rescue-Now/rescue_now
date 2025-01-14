@@ -75,10 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? _timer;
   bool _isHolding = false;
 
-  void sendSOSAlert() {
-    print("Sending SOS alert...");
-  }
-
   Future<void> callEmergencyNumber() async {
     const String emergencyNumber = '0760068619';
     final Uri telUri = Uri(
@@ -101,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _timer = Timer(const Duration(seconds: 1), () {
       if (_isHolding) {
-        sendSOSAlert();
+        getAndSendLocation();
         _showEmergencyMessage();
         callEmergencyNumber();
       }
@@ -337,7 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Send Emergency Text',
                       onTap: () {
-                          sendSOSAlert();
+                          getAndSendLocation();
                           textEmergencyContacts();
                           Navigator.pop(context);
                       },
@@ -345,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Voice Emergency Call',
                       onTap: () {
-                        sendSOSAlert();
+                        getAndSendLocation();
                         initiateVoiceCall();
                         Navigator.pop(context);
                       },
@@ -353,7 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Video Emergency Call',
                       onTap: () {
-                        sendSOSAlert();
+                        getAndSendLocation();
                         initiateVideoCall();
                         Navigator.pop(context);
                       },
