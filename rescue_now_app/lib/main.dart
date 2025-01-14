@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isHolding = false;
 
   void sendSOSAlert() {
-    print("SOS alert has been sent!");
+    print("Sending SOS alert...");
   }
 
   Future<void> callEmergencyNumber() async {
@@ -444,11 +444,6 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       print('No emergency contact saved.');
     }
-  }
-
-  // Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele
-  void initiateTextConversation() {
-    print('Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele');
   }
 
   Future<void> initiateVoiceCall() async {
