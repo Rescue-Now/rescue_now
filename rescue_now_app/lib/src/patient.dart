@@ -1,5 +1,5 @@
 class Patient {
-  final String id;
+  String id;
   String firstName;
   String lastName;
   int age;
@@ -9,7 +9,7 @@ class Patient {
   List<String> medicalHistory;
 
   Patient({
-    required this.id,
+    this.id = 'gol lol',
     required this.firstName,
     required this.lastName,
     required this.age,
@@ -36,7 +36,7 @@ class Patient {
   // Create a Patient object from a Map
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
-      id: json['id'],
+      id: json['id'] ?? 'gol lol',
       firstName: json['firstName'],
       lastName: json['lastName'],
       age: json['age'],
@@ -45,5 +45,19 @@ class Patient {
       conditions: List<String>.from(json['conditions']),
       medicalHistory: List<String>.from(json['medicalHistory']),
     );
+  }
+
+  //create a Map from a Patient
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': age,
+      'bloodGroup': bloodGroup,
+      'knownAllergies': knownAllergies,
+      'conditions': conditions,
+      'medicalHistory': medicalHistory,
+    };
   }
 }

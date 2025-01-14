@@ -54,6 +54,7 @@ Future<http.Response> sendLocationToServer(double latitude, double longitude) as
   return http.put(uri);
 }
 
+//TODO baa mi-a sters careva sa nu se mai foloseasca functia asta, trebuie repusa
 void getAndSendLocation() async {
   Position position = await determinePosition();
   print(position);

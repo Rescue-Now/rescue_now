@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
-import 'package:rescue_now_app/src/location_management.dart';
+import 'package:rescue_now_app/src/location_management.dart';// ee n-ar trebui sa fie unusued da las ne mai auizim noi
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
@@ -14,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
