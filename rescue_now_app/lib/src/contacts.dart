@@ -70,7 +70,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colors.background,
       appBar: AppBar(
-        title: const Text('Emergency Contacts'),
+        title: Text('Emergency Contacts', style : TextStyle(color: AppTheme.colors.text)),
         backgroundColor: AppTheme.colors.primary,
       ),
       body: Padding(
