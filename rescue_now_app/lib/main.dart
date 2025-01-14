@@ -430,7 +430,9 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
       final Uri smsUri = Uri(
         scheme: 'sms',
         path: contactNumber,
@@ -441,8 +443,6 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         print('Could not launch SMS to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
   }
 
@@ -450,15 +450,15 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
       final Uri telUri = Uri(scheme: 'tel', path: contactNumber);
       if (await canLaunchUrl(telUri)) {
         await launchUrl(telUri);
       } else {
         print('Could not launch Phone Call to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
   }
 
@@ -466,7 +466,9 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
       final Uri videoCallUri = Uri(
         scheme: 'facetime', // Schimbă cu schema dorită pentru Android, dacă este cazul.
         path: contactNumber,
@@ -476,8 +478,6 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         print('Could not launch Video Call to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
   }
 }
