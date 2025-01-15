@@ -121,6 +121,7 @@ void getAndSendLocation() async {
     }
     print('response de la server');
     print(response);
+
   } catch (e) {
     print('creca e inchis serveru');
     print(e);
