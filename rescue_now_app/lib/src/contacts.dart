@@ -11,7 +11,8 @@ class ContactsScreen extends StatefulWidget {
 
 class _ContactsScreenState extends State<ContactsScreen> {
   final TextEditingController _contactNameController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
+  final TextEditingController _contactNumberController =
+      TextEditingController();
   bool isLoading = true;
   String? savedName;
   String? savedNumber;
@@ -41,11 +42,13 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Future<void> _saveEmergencyContact() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('emergencyContactName', _contactNameController.text);
-    await prefs.setString('emergencyContactNumber', _contactNumberController.text);
+    await prefs.setString(
+        'emergencyContactNumber', _contactNumberController.text);
     setState(() {
       savedName = _contactNameController.text;
       savedNumber = _contactNumberController.text;
     });
+    print('saved emergency contact!!');
   }
 
   void _editContact() {
@@ -67,7 +70,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colors.background,
       appBar: AppBar(
-        title: const Text('Emergency Contacts'),
+        title: Text('Emergency Contacts', style : TextStyle(color: AppTheme.colors.text)),
         backgroundColor: AppTheme.colors.primary,
       ),
       body: Padding(
@@ -86,30 +89,37 @@ class _ContactsScreenState extends State<ContactsScreen> {
             const SizedBox(height: 16),
             savedName != null && savedNumber != null
                 ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Name: $savedName',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Number: $savedNumber',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _editContact,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.colors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  child: const Text('Edit Contact'),
-                ),
-              ],
-            )
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Name: ' + '${savedName ?? "Not set yet"}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Number: ' + '${savedNumber ?? "Not set yet"}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _editContact,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.colors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Text(
+                          'Edit Contact',
+                          style: TextStyle(
+                            color: AppTheme.colors.text,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 : const Text('No emergency contact saved yet.'),
             const SizedBox(height: 24),
             TextField(
@@ -137,7 +147,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   borderRadius: BorderRadius.circular(24),
                 ),
               ),
-              child: const Text('Save Contact'),
+              child: Text(
+                'Save Contact',
+                style: TextStyle(
+                  color: AppTheme.colors.text,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),

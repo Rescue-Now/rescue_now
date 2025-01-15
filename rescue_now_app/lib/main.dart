@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
-import 'package:rescue_now_app/src/location_management.dart';
+import 'package:rescue_now_app/src/location_management.dart'; // ee n-ar trebui sa fie unusued da las ne mai auizim noi
+import 'package:rescue_now_app/src/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
@@ -74,10 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? _timer;
   bool _isHolding = false;
 
-  void sendSOSAlert() {
-    print("SOS alert has been sent!");
-  }
-
   Future<void> callEmergencyNumber() async {
     const String emergencyNumber = '0760068619';
     final Uri telUri = Uri(
@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _timer = Timer(const Duration(seconds: 1), () {
       if (_isHolding) {
-        sendSOSAlert();
+        getAndSendLocation();
         _showEmergencyMessage();
         callEmergencyNumber();
       }
@@ -336,15 +336,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Send Emergency Text',
                       onTap: () {
-                          sendSOSAlert();
-                          textEmergencyContacts();
-                          Navigator.pop(context);
+                        getAndSendLocation();
+                        textEmergencyContact();
+                        Navigator.pop(context);
                       },
                     ),
                     _buildModalButton(
                       label: 'Voice Emergency Call',
                       onTap: () {
-                        sendSOSAlert();
+                        getAndSendLocation();
                         initiateVoiceCall();
                         Navigator.pop(context);
                       },
@@ -352,7 +352,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Video Emergency Call',
                       onTap: () {
-                        sendSOSAlert();
+                        getAndSendLocation();
                         initiateVideoCall();
                         Navigator.pop(context);
                       },
@@ -426,44 +426,44 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> textEmergencyContacts() async {
+  Future<void> textEmergencyContact() async {
+    print('dam text la contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
+      // get current location from patient in sharedprefferences
+
+      Position position = await determinePosition();
+
       final Uri smsUri = Uri(
         scheme: 'sms',
         path: contactNumber,
-        queryParameters: {'body': 'This is an emergency! Please help.'},
+        queryParameters: {'body': 'Baa sunt la${position.latitude} ${position.longitude} ajuta-ma drqq!!'},
       );
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
       } else {
         print('Could not launch SMS to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
-  }
-
-  // Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele
-  void initiateTextConversation() {
-    print('Asta gen porneste sa incepi sa vorebesti cu aia de la 112, NU cu contactele');
   }
 
   Future<void> initiateVoiceCall() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
       final Uri telUri = Uri(scheme: 'tel', path: contactNumber);
       if (await canLaunchUrl(telUri)) {
         await launchUrl(telUri);
       } else {
         print('Could not launch Phone Call to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
   }
 
@@ -471,9 +471,12 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
-    if (contactNumber != null) {
+    if (contactNumber == null) {
+      print('No emergency contact saved.');
+    } else {
       final Uri videoCallUri = Uri(
-        scheme: 'facetime', // Schimbă cu schema dorită pentru Android, dacă este cazul.
+        scheme: 'facetime',
+        // Schimbă cu schema dorită pentru Android, dacă este cazul.
         path: contactNumber,
       );
       if (await canLaunchUrl(videoCallUri)) {
@@ -481,8 +484,6 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         print('Could not launch Video Call to $contactNumber');
       }
-    } else {
-      print('No emergency contact saved.');
     }
   }
 }
