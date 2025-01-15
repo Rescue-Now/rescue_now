@@ -7,13 +7,17 @@ class Patient {
   List<String> knownAllergies;
   List<String> conditions;
   List<String> medicalHistory;
+  double longitude;
+  double latitude;
 
   Patient({
     this.id = 'gol lol',
-    required this.firstName,
-    required this.lastName,
-    required this.age,
-    required this.bloodGroup,
+    this.latitude = -0.0,
+    this.longitude = -0.0,
+    this.firstName= '',
+    this.lastName = '',
+    this.age = 0,
+    this.bloodGroup = '',
     this.knownAllergies = const [],
     this.conditions = const [],
     this.medicalHistory = const [],

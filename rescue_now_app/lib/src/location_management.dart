@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:rescue_now_app/src/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 //ca sa poti sa faci json si inapoi
 // import 'dart:convert';
 
@@ -48,15 +49,36 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
-Future<http.Response> sendLocationToServer(double latitude, double longitude, String patientId) async {
+Future<String> sendLocationToServer(
+    double latitude, double longitude, String patientId) async {
+  /// da return la id-u de la pacientu creat daca nu a mai fost creat inainte, si "Patient Found" daca a gasit
   final queryParams = {
-    'lat' : latitude.toString(),
-    'long' : longitude.toString(),
-    'patientID' : patientId
+    'lat': latitude.toString(),
+    'long': longitude.toString(),
+    'patientID': patientId
   };
   final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
 
-  return http.put(uri);
+  //nu s-a setat inca idul adica inca n-am dat call deloc
+  if (patientId == 'gol lol') {
+    print('sending post request');
+    final response =
+        await http.post(uri, headers: {'Content-Type': 'application/json'});
+
+    // save the id that the server gave us
+    // parse from json response
+    print(response.body);
+    return json.decode(response.body)['id'];
+  }
+
+  // a fost setat idul, deci vrem sa updatam datele
+  else {
+    print('sending put request');
+    final response =
+        await http.put(uri, headers: {'Content-Type': 'application/json'});
+    print(response.body);
+    return "Patient found";
+  }
 }
 
 //TODO baa mi-a sters careva sa nu se mai foloseasca functia asta, trebuie repusa
@@ -65,9 +87,30 @@ void getAndSendLocation() async {
   print(position);
   SharedPreferencesAsync prefs = SharedPreferencesAsync();
   String? patientJson = await prefs.getString('patientData');
-  final Patient patient = Patient.fromJson(json.decode(patientJson!));
+  Patient patient ;
+  // if it already exists
+  if (patientJson != null) {
+    patient = Patient.fromJson(json.decode(patientJson));
+  }
+  else {
+    // init with default values
+    patient = Patient();
+  }
 
-  final response = await sendLocationToServer(position.latitude, position.longitude,patient.id);
+  patient.longitude = position.longitude;
+  patient.latitude = position.latitude;
+
+  final response = await sendLocationToServer(
+      patient.latitude, patient.longitude, patient.id);
+
+  //save patient back to prefs
+  if (response != "Patient found") {
+    // this means it's an id
+    patient.id = response;
+  }
+
+  await prefs.setString('patientData', json.encode(patient.toJson()));
+
   print('response de la server');
   print(response);
 }
