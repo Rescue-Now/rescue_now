@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
-import 'package:rescue_now_app/src/location_management.dart';// ee n-ar trebui sa fie unusued da las ne mai auizim noi
+import 'package:rescue_now_app/src/location_management.dart'; // ee n-ar trebui sa fie unusued da las ne mai auizim noi
+import 'package:rescue_now_app/src/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
@@ -14,7 +17,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -333,9 +335,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Send Emergency Text',
                       onTap: () {
-                          getAndSendLocation();
-                          textEmergencyContacts();
-                          Navigator.pop(context);
+                        getAndSendLocation();
+                        textEmergencyContact();
+                        Navigator.pop(context);
                       },
                     ),
                     _buildModalButton(
@@ -423,17 +425,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> textEmergencyContacts() async {
+  Future<void> textEmergencyContact() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
     if (contactNumber == null) {
       print('No emergency contact saved.');
     } else {
+      // get current location from patient in sharedprefferences
+
+      SharedPreferencesAsync prefs = SharedPreferencesAsync();
+      String? patientJson = await prefs.getString('patientData');
+      Patient patient = Patient.fromJson(json.decode(patientJson!));
+
       final Uri smsUri = Uri(
         scheme: 'sms',
         path: contactNumber,
-        queryParameters: {'body': 'This is an emergency! Please help.'},
+        queryParameters: {'body': 'Baa sunt la' + patient.latitude.toString() + ' ' + patient.longitude.toString()+ ' ajuta-ma drqq!!'},
       );
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
@@ -467,7 +475,8 @@ class _MyHomePageState extends State<MyHomePage> {
       print('No emergency contact saved.');
     } else {
       final Uri videoCallUri = Uri(
-        scheme: 'facetime', // Schimbă cu schema dorită pentru Android, dacă este cazul.
+        scheme: 'facetime',
+        // Schimbă cu schema dorită pentru Android, dacă este cazul.
         path: contactNumber,
       );
       if (await canLaunchUrl(videoCallUri)) {

@@ -49,6 +49,29 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
+Future<String> postSendLocation(Uri uri) async {
+  print('sending post request');
+  final response =
+      await http.post(uri, headers: {'Content-Type': 'application/json'});
+
+  // save the id that the server gave us
+  // parse from json response
+  print(response.body);
+  return json.decode(response.body)['id'];
+}
+
+Future<String> putSendLocation(Uri uri) async {
+  print('sending put request');
+  final response =
+      await http.put(uri, headers: {'Content-Type': 'application/json'});
+  print('put response');
+  print(response.body);
+  if (response.statusCode == 404) {
+    return await postSendLocation(uri);
+  }
+  return "Patient found";
+}
+
 Future<String> sendLocationToServer(
     double latitude, double longitude, String patientId) async {
   /// da return la id-u de la pacientu creat daca nu a mai fost creat inainte, si "Patient Found" daca a gasit
@@ -59,25 +82,13 @@ Future<String> sendLocationToServer(
   };
   final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
 
-  //nu s-a setat inca idul adica inca n-am dat call deloc
+  //POST nu s-a setat inca idul adica inca n-am dat call deloc
   if (patientId == 'gol lol') {
-    print('sending post request');
-    final response =
-        await http.post(uri, headers: {'Content-Type': 'application/json'});
-
-    // save the id that the server gave us
-    // parse from json response
-    print(response.body);
-    return json.decode(response.body)['id'];
+    return await postSendLocation(uri);
   }
-
-  // a fost setat idul, deci vrem sa updatam datele
+  //PUT a fost setat idul, deci vrem sa updatam datele
   else {
-    print('sending put request');
-    final response =
-        await http.put(uri, headers: {'Content-Type': 'application/json'});
-    print(response.body);
-    return "Patient found";
+    return await putSendLocation(uri);
   }
 }
 
@@ -87,12 +98,11 @@ void getAndSendLocation() async {
   print(position);
   SharedPreferencesAsync prefs = SharedPreferencesAsync();
   String? patientJson = await prefs.getString('patientData');
-  Patient patient ;
+  Patient patient;
   // if it already exists
   if (patientJson != null) {
     patient = Patient.fromJson(json.decode(patientJson));
-  }
-  else {
+  } else {
     // init with default values
     patient = Patient();
   }
@@ -100,17 +110,21 @@ void getAndSendLocation() async {
   patient.longitude = position.longitude;
   patient.latitude = position.latitude;
 
-  final response = await sendLocationToServer(
-      patient.latitude, patient.longitude, patient.id);
+  try {
+    final response = await sendLocationToServer(
+        patient.latitude, patient.longitude, patient.id);
 
-  //save patient back to prefs
-  if (response != "Patient found") {
-    // this means it's an id
-    patient.id = response;
+    //save patient back to prefs
+    if (response != "Patient found") {
+      // this means it's an id
+      patient.id = response;
+    }
+    print('response de la server');
+    print(response);
+  } catch (e) {
+    print('creca e inchis serveru');
+    print(e);
   }
 
   await prefs.setString('patientData', json.encode(patient.toJson()));
-
-  print('response de la server');
-  print(response);
 }
