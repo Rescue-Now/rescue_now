@@ -94,6 +94,7 @@ Future<String> sendLocationToServer(
 
 //TODO baa mi-a sters careva sa nu se mai foloseasca functia asta, trebuie repusa
 void getAndSendLocation() async {
+  // try pinging the server if it's even online
   Position position = await determinePosition();
   print(position);
   SharedPreferencesAsync prefs = SharedPreferencesAsync();
@@ -110,22 +111,22 @@ void getAndSendLocation() async {
   patient.longitude = position.longitude;
   patient.latitude = position.latitude;
 
+  var response;
   try {
-    final response = await sendLocationToServer(
+    response = await sendLocationToServer(
         patient.latitude, patient.longitude, patient.id);
-
-    //save patient back to prefs
-    if (response != "Patient found") {
-      // this means it's an id
-      patient.id = response;
-    }
-    print('response de la server');
-    print(response);
-
   } catch (e) {
-    print('creca e inchis serveru');
     print(e);
+    return;
   }
+
+  //save patient back to prefs
+  if (response != "Patient found") {
+    // this means it's an id
+    patient.id = response;
+  }
+  print('response de la server');
+  print(response);
 
   await prefs.setString('patientData', json.encode(patient.toJson()));
 }

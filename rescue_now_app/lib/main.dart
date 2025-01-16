@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
 import 'package:rescue_now_app/src/location_management.dart'; // ee n-ar trebui sa fie unusued da las ne mai auizim noi
-import 'package:rescue_now_app/src/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
@@ -427,7 +424,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> textEmergencyContact() async {
-    print('dam text la contact');
+    print('Sending text to contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
@@ -441,7 +438,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final Uri smsUri = Uri(
         scheme: 'sms',
         path: contactNumber,
-        queryParameters: {'body': 'Baa sunt la${position.latitude} ${position.longitude} ajuta-ma drqq!!'},
+        queryParameters: {'body': 'These are my coordinates: latitude: ${position.latitude}, longitude: ${position.longitude}. Help me now!'},
       );
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
