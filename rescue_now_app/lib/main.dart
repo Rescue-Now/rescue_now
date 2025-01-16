@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,6 +9,7 @@ import 'package:rescue_now_app/src/location_management.dart'; // ee n-ar trebui 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
+import 'src/patient.dart';
 import 'src/profile_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -434,11 +437,23 @@ class _MyHomePageState extends State<MyHomePage> {
       // get current location from patient in sharedprefferences
 
       Position position = await determinePosition();
-      final String message = """
-      These are my coordinates: 
-        latitude: $position.latitude, longitude: $position.longitude. 
-        I am 
-      """;
+      Patient? patient;
+
+      SharedPreferencesAsync prefs = SharedPreferencesAsync();
+      String? patientJson = await prefs.getString('patientData');
+      if (patientJson != null) {
+        patient = Patient.fromJson(json.decode(patientJson));
+      }
+
+      final String message = """These are my coordinates: 
+latitude: ${position.latitude}
+longitude: ${position.longitude}
+${patient?.bloodGroup != null ? 'My blood type is:' + patient!.bloodGroup : ''}
+${patient?.knownAllergies != null ? 'I\'m allergic to:' + patient!.knownAllergies.toString() : ''}
+    
+${patient?.conditions != null ? 'My conditions are:' + patient!.conditions.toString() : ''}
+${patient?.medicalHistory != null ? 'My medical history being:' + patient!.medicalHistory.toString() : ''}
+""";
 
       final Uri smsUri = Uri.parse("sms:$contactNumber?body=$message");
 
