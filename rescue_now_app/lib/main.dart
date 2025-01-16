@@ -434,12 +434,14 @@ class _MyHomePageState extends State<MyHomePage> {
       // get current location from patient in sharedprefferences
 
       Position position = await determinePosition();
+      final String message = """
+      These are my coordinates: 
+        latitude: $position.latitude, longitude: $position.longitude. 
+        I am 
+      """;
 
-      final Uri smsUri = Uri(
-        scheme: 'sms',
-        path: contactNumber,
-        queryParameters: {'body': 'These are my coordinates: latitude: ${position.latitude}, longitude: ${position.longitude}. Help me now!'},
-      );
+      final Uri smsUri = Uri.parse("sms:$contactNumber?body=$message");
+
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
       } else {
