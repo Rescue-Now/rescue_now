@@ -76,12 +76,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void sendPatientDataToServer() async {
-    final uri = Uri.http('0.0.0.0:8000', '/patient');
+    final uri = Uri.http('rescue-now.deno.dev', '/patient');
     final body = jsonEncode(patient);
 
     //nu s-a setat inca idul adica inca n-am dat call deloc
     if (patient.id == 'gol lol') {
-      print('sending post request');
+      print('sending post request for patient data');
       final response = await http.post(uri,
           headers: {'Content-Type': 'application/json'}, body: body);
 

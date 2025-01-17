@@ -50,7 +50,7 @@ Future<Position> determinePosition() async {
 }
 
 Future<String> postSendLocation(Uri uri) async {
-  print('sending post request');
+  print('sending post request for location');
   final response =
       await http.post(uri, headers: {'Content-Type': 'application/json'});
 
@@ -80,7 +80,7 @@ Future<String> sendLocationToServer(
     'long': longitude.toString(),
     'patientID': patientId
   };
-  final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
+  final uri = Uri.http('rescue-now.deno.dev', '/location', queryParams);
 
   //POST nu s-a setat inca idul adica inca n-am dat call deloc
   if (patientId == 'gol lol') {
@@ -115,6 +115,7 @@ Future<Position> getAndSendLocation() async {
     response = await sendLocationToServer(
         patient.latitude, patient.longitude, patient.id);
   } catch (e) {
+    print('ceva problema la sendLocationToServer');
     print(e);
     return position;
   }

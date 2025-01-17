@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getSendLocationSetState() async {
+  Future<void> _getSendLocationSetState() async {
     setState(() async {
       position = await getAndSendLocation();
     });
@@ -106,9 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _buttonSize = 160.0;
     });
 
-    _timer = Timer(const Duration(seconds: 1), () {
+    _timer = Timer(const Duration(seconds: 1), () async {
       if (_isHolding) {
-        _getSendLocationSetState();
+        await _getSendLocationSetState();
         _showEmergencyMessage();
         callEmergencyNumber();
       }
@@ -367,26 +367,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     _buildModalButton(
                       label: 'Send Emergency Text',
-                      onTap: () {
-                        _getSendLocationSetState();
+                      onTap: () async {
+                        await _getSendLocationSetState();
                         textEmergencyContact();
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                     _buildModalButton(
                       label: 'Voice Emergency Call',
-                      onTap: () {
-                        _getSendLocationSetState();
+                      onTap: () async {
+                        await _getSendLocationSetState();
                         initiateVoiceCall();
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                     _buildModalButton(
                       label: 'Video Emergency Call',
-                      onTap: () {
-                        _getSendLocationSetState();
+                      onTap: () async {
+                        await _getSendLocationSetState();
                         initiateVideoCall();
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   ],
