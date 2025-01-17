@@ -6,10 +6,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
 import 'package:rescue_now_app/src/location_management.dart'; // ee n-ar trebui sa fie unusued da las ne mai auizim noi
-import 'package:rescue_now_app/src/patient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/firebase_options.dart';
+import 'src/patient.dart';
 import 'src/profile_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -77,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double _buttonSize = 145.0;
   Timer? _timer;
   bool _isHolding = false;
+  late Position position;
 
   Future<void> callEmergencyNumber() async {
     const String emergencyNumber = '0760068619';
@@ -92,6 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _getSendLocationSetState() async {
+    setState(() async {
+      position = await getAndSendLocation();
+    });
+  }
+
   void _onLongPressStart() {
     setState(() {
       _isHolding = true;
@@ -100,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _timer = Timer(const Duration(seconds: 1), () {
       if (_isHolding) {
-        getAndSendLocation();
+        _getSendLocationSetState();
         _showEmergencyMessage();
         callEmergencyNumber();
       }
@@ -113,6 +120,30 @@ class _MyHomePageState extends State<MyHomePage> {
       _buttonSize = 145.0;
     });
     _timer?.cancel();
+  }
+
+  void _showNoContactsSavedMessage() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("No contacts saved"),
+        content: const Text("Please save an emergency contact"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ContactsScreen(),
+                ),
+              );
+            },
+            child: const Text("Go to contacts"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showEmergencyMessage() {
@@ -336,7 +367,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Send Emergency Text',
                       onTap: () {
-                        getAndSendLocation();
+                        _getSendLocationSetState();
                         textEmergencyContact();
                         Navigator.pop(context);
                       },
@@ -344,7 +375,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Voice Emergency Call',
                       onTap: () {
-                        getAndSendLocation();
+                        _getSendLocationSetState();
                         initiateVoiceCall();
                         Navigator.pop(context);
                       },
@@ -352,7 +383,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _buildModalButton(
                       label: 'Video Emergency Call',
                       onTap: () {
-                        getAndSendLocation();
+                        _getSendLocationSetState();
                         initiateVideoCall();
                         Navigator.pop(context);
                       },
@@ -427,22 +458,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> textEmergencyContact() async {
-    print('dam text la contact');
+    print('Sending text to contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
 
     if (contactNumber == null) {
+      _showNoContactsSavedMessage();
       print('No emergency contact saved.');
     } else {
       // get current location from patient in sharedprefferences
 
-      Position position = await determinePosition();
+      Patient? patient;
 
-      final Uri smsUri = Uri(
-        scheme: 'sms',
-        path: contactNumber,
-        queryParameters: {'body': 'Baa sunt la${position.latitude} ${position.longitude} ajuta-ma drqq!!'},
-      );
+      SharedPreferencesAsync prefs = SharedPreferencesAsync();
+      String? patientJson = await prefs.getString('patientData');
+      if (patientJson != null) {
+        patient = Patient.fromJson(json.decode(patientJson));
+      }
+
+      final String message = """These are my coordinates: 
+latitude: ${position.latitude}
+longitude: ${position.longitude}
+${patient?.bloodGroup != '' ? 'My blood type is:' + patient!.bloodGroup : ''}
+${patient?.knownAllergies != [] ? 'I\'m allergic to:' + patient!.knownAllergies.toString() : ''}
+    
+${patient?.conditions != [] ? 'My conditions are:' + patient!.conditions.toString() : ''}
+${patient?.medicalHistory != [] ? 'My medical history being:' + patient!.medicalHistory.toString() : ''}
+""";
+
+      final Uri smsUri = Uri.parse("sms:$contactNumber?body=$message");
+
       if (await canLaunchUrl(smsUri)) {
         await launchUrl(smsUri);
       } else {
