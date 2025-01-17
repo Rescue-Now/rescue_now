@@ -57,7 +57,7 @@ Future<String> postSendLocation(Uri uri) async {
   // save the id that the server gave us
   // parse from json response
   print(response.reasonPhrase);
-  if (300 <= response.statusCode && response.statusCode <= 400) {
+  if (300 <= response.statusCode && response.statusCode < 400) {
     // redirect
     final redirectUri = Uri.parse(response.headers['location']!);
     return await postSendLocation(redirectUri);
@@ -73,7 +73,7 @@ Future<String> putSendLocation(Uri uri) async {
       await http.put(uri, headers: {'Content-Type': 'application/json'});
   print('put response');
   print(response.reasonPhrase);
-  if (300 <= response.statusCode && response.statusCode <= 400) {
+  if (300 <= response.statusCode && response.statusCode < 400) {
     // redirect
     final redirectUri = Uri.parse(response.headers['location']!);
     return await putSendLocation(redirectUri);

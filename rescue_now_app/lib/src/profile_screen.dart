@@ -75,15 +75,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  Future<http.Response> followPostRedirect(http.Response response, String body) {
+    final redirectUrl = response.headers['location'];
+    return http.post(Uri.parse(redirectUrl!),
+        headers: {'Content-Type': 'application/json'}, body: body);
+  }
+
+  Future<http.Response> followPutRedirect(http.Response response, String body) {
+    final redirectUrl = response.headers['location'];
+    return http.put(Uri.parse(redirectUrl!),
+        headers: {'Content-Type': 'application/json'}, body: body);
+  }
+
   void sendPatientDataToServer() async {
     final uri = Uri.http('rescue-now.deno.dev', '/patient');
     final body = jsonEncode(patient);
 
     //nu s-a setat inca idul adica inca n-am dat call deloc
-    if (patient.id == 'gol lol') {
+    if (patient.id == 'gol lol' || patient.id == "Error") {
       print('sending post request for patient data');
-      final response = await http.post(uri,
+      var response = await http.post(uri,
           headers: {'Content-Type': 'application/json'}, body: body);
+
+      if (300 <= response.statusCode && response.statusCode < 400) {
+        response = await followPostRedirect(response, body);
+      }
 
       // save the id that the server gave us
       // parse from json response
@@ -92,12 +108,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await prefs.setString('patientData', json.encode(patient.toJson()));
       print(response.body);
     }
-
     // a fost setat idul, deci vrem sa updatam datele
     else {
-      print('sending put request');
-      final response = await http.put(uri,
+      print('sending put request for patient data');
+      var response = await http.put(uri,
           headers: {'Content-Type': 'application/json'}, body: body);
+
+      if (300 <= response.statusCode && response.statusCode < 400) {
+        response = await followPutRedirect(response, body);
+      }
+
       print(response.body);
     }
   }
@@ -109,17 +129,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     patient.lastName = lastNameController.text;
     patient.age = int.tryParse(ageController.text) ?? patient.age;
     patient.bloodGroup = bloodGroupController.text;
-    patient.knownAllergies =
-        allergiesController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
-    patient.conditions =
-        conditionsController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
-    patient.medicalHistory =
-        medicalHistoryController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
+    patient.knownAllergies = allergiesController.text
+        .split(',')
+        .map((e) => e.trim())
+        .where((el) => el != "")
+        .toList();
+    patient.conditions = conditionsController.text
+        .split(',')
+        .map((e) => e.trim())
+        .where((el) => el != "")
+        .toList();
+    patient.medicalHistory = medicalHistoryController.text
+        .split(',')
+        .map((e) => e.trim())
+        .where((el) => el != "")
+        .toList();
 
     await prefs.setString('patientData', json.encode(patient.toJson()));
   }
 
-  void toggleEditMode() {
+  void toggleEditModeAndSave() {
     setState(() {
       isEditing = !isEditing;
       if (!isEditing) {
@@ -262,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: ElevatedButton(
                   onPressed: () {
-                    toggleEditMode();
+                    toggleEditModeAndSave();
                     if (!isEditing) sendPatientDataToServer();
                   },
                   style: ElevatedButton.styleFrom(
