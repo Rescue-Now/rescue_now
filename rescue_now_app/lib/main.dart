@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rescue_now_app/src/contacts.dart';
 import 'package:rescue_now_app/src/crash_detection.dart';
@@ -457,6 +458,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  String _convertListForMessage(List<String> list) {
+    return list.toString().replaceAll(RegExp(r'[\[\]]'), '');
+  }
+
   Future<void> textEmergencyContact() async {
     print('Sending text to contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -479,11 +484,11 @@ class _MyHomePageState extends State<MyHomePage> {
       final String message = """These are my coordinates: 
 latitude: ${position.latitude}
 longitude: ${position.longitude}
-${patient?.bloodGroup != '' ? 'My blood type is:' + patient!.bloodGroup : ''}
-${patient?.knownAllergies != [] ? 'I\'m allergic to:' + patient!.knownAllergies.toString() : ''}
-    
-${patient?.conditions != [] ? 'My conditions are:' + patient!.conditions.toString() : ''}
-${patient?.medicalHistory != [] ? 'My medical history being:' + patient!.medicalHistory.toString() : ''}
+${patient?.age != 0 ? "I'm " + patient!.age.toString() + " years old" : ''}
+${patient?.bloodGroup != "" ? 'My blood type is:' + patient!.bloodGroup : ''}
+${patient?.knownAllergies[0] != "" ? "I'm allergic to:" + _convertListForMessage(patient!.knownAllergies) : ''}
+${patient?.conditions[0] != "" ? 'My conditions are:' + _convertListForMessage(patient!.conditions) : ''}
+${patient?.medicalHistory[0] != "" ? 'My medical history being:' + _convertListForMessage(patient!.medicalHistory) : ''}
 """;
 
       final Uri smsUri = Uri.parse("sms:$contactNumber?body=$message");

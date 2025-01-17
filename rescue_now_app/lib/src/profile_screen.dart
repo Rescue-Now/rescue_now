@@ -110,11 +110,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     patient.age = int.tryParse(ageController.text) ?? patient.age;
     patient.bloodGroup = bloodGroupController.text;
     patient.knownAllergies =
-        allergiesController.text.split(',').map((e) => e.trim()).toList();
+        allergiesController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
     patient.conditions =
-        conditionsController.text.split(',').map((e) => e.trim()).toList();
+        conditionsController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
     patient.medicalHistory =
-        medicalHistoryController.text.split(',').map((e) => e.trim()).toList();
+        medicalHistoryController.text.split(',').map((e) => e.trim()).where((el)=>el != "").toList();
 
     await prefs.setString('patientData', json.encode(patient.toJson()));
   }
