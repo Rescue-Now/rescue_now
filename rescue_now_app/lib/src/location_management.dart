@@ -80,7 +80,7 @@ Future<String> sendLocationToServer(
     'long': longitude.toString(),
     'patientID': patientId
   };
-  final uri = Uri.http('rescue-now.deno.dev', '/location', queryParams);
+  final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
 
   //POST nu s-a setat inca idul adica inca n-am dat call deloc
   if (patientId == 'gol lol') {
