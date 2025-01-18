@@ -106,9 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _buttonSize = 160.0;
     });
 
-    _timer = Timer(const Duration(seconds: 1), () async {
+    _timer = Timer(const Duration(seconds: 1), () {
       if (_isHolding) {
-        await _getSendLocationSetState();
+        _getSendLocationSetState();
         _showEmergencyMessage();
         callEmergencyNumber();
       }
