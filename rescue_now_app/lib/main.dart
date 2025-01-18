@@ -80,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isHolding = false;
   late Position position;
 
+
   Future<void> callEmergencyNumber() async {
     const String emergencyNumber = '0760068619';
     final Uri telUri = Uri(
@@ -165,6 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //ask for das data first
+    _getSendLocationSetState();
+
     return Scaffold(
       backgroundColor: AppTheme.colors.background,
       body: SafeArea(
