@@ -75,7 +75,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Future<http.Response> followPostRedirect(http.Response response, String body) {
+  Future<http.Response> followPostRedirect(
+      http.Response response, String body) {
     final redirectUrl = response.headers['location'];
     return http.post(Uri.parse(redirectUrl!),
         headers: {'Content-Type': 'application/json'}, body: body);
