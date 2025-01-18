@@ -367,9 +367,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     _buildModalButton(
                       label: 'Send Emergency Text',
-                      onTap: () async {
-                        await _getSendLocationSetState();
-                        textEmergencyContact();
+                      onTap: () {
+                        _getSendLocationSetState();
+                        _textEmergencyContact();
                         if (context.mounted) {
                           Navigator.pop(context);
                         }
@@ -377,8 +377,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     _buildModalButton(
                       label: 'Voice Emergency Call',
-                      onTap: () async {
-                        await _getSendLocationSetState();
+                      onTap: () {
+                        _getSendLocationSetState();
                         initiateVoiceCall();
                         if (context.mounted) {
                           Navigator.pop(context);
@@ -387,8 +387,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     _buildModalButton(
                       label: 'Video Emergency Call',
-                      onTap: () async {
-                        await _getSendLocationSetState();
+                      onTap: () {
+                        _getSendLocationSetState();
                         initiateVideoCall();
                         if (context.mounted) {
                           Navigator.pop(context);
@@ -468,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return list.toString().replaceAll(RegExp(r'[\[\]]'), '');
   }
 
-  Future<void> textEmergencyContact() async {
+  Future<void> _textEmergencyContact() async {
     print('Sending text to contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');
