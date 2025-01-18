@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getSendLocationSetState() async {
+  Future<void> _getSendLocationSetState() async {
     setState(() async {
       position = await getAndSendLocation();
     });
@@ -369,8 +369,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: 'Send Emergency Text',
                       onTap: () {
                         _getSendLocationSetState();
-                        textEmergencyContact();
-                        Navigator.pop(context);
+                        _textEmergencyContact();
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                     _buildModalButton(
@@ -378,7 +380,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () {
                         _getSendLocationSetState();
                         initiateVoiceCall();
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                     _buildModalButton(
@@ -386,7 +390,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () {
                         _getSendLocationSetState();
                         initiateVideoCall();
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   ],
@@ -462,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return list.toString().replaceAll(RegExp(r'[\[\]]'), '');
   }
 
-  Future<void> textEmergencyContact() async {
+  Future<void> _textEmergencyContact() async {
     print('Sending text to contact');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactNumber = prefs.getString('emergencyContactNumber');

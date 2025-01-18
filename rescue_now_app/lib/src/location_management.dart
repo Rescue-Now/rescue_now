@@ -50,14 +50,21 @@ Future<Position> determinePosition() async {
 }
 
 Future<String> postSendLocation(Uri uri) async {
-  print('sending post request');
+  print('sending post request for location');
   final response =
       await http.post(uri, headers: {'Content-Type': 'application/json'});
 
   // save the id that the server gave us
   // parse from json response
-  print(response.body );
-  return json.decode(response.body)['id'];
+  print(response.reasonPhrase);
+  if (300 <= response.statusCode && response.statusCode < 400) {
+    // redirect
+    final redirectUri = Uri.parse(response.headers['location']!);
+    return await postSendLocation(redirectUri);
+  } else if (response.statusCode == 201) {
+    return json.decode(response.body)['id'];
+  }
+  throw Exception('Failed to post/create location');
 }
 
 Future<String> putSendLocation(Uri uri) async {
@@ -65,11 +72,17 @@ Future<String> putSendLocation(Uri uri) async {
   final response =
       await http.put(uri, headers: {'Content-Type': 'application/json'});
   print('put response');
-  print(response.body);
-  if (response.statusCode == 404) {
+  print(response.reasonPhrase);
+  if (300 <= response.statusCode && response.statusCode < 400) {
+    // redirect
+    final redirectUri = Uri.parse(response.headers['location']!);
+    return await putSendLocation(redirectUri);
+  } else if (response.statusCode == 404) {
     return await postSendLocation(uri);
+  } else if (response.statusCode == 204) {
+    return "Patient found";
   }
-  return "Patient found";
+  throw Exception('Failed to update/put location');
 }
 
 Future<String> sendLocationToServer(
@@ -80,10 +93,10 @@ Future<String> sendLocationToServer(
     'long': longitude.toString(),
     'patientID': patientId
   };
-  final uri = Uri.http('0.0.0.0:8000', '/location', queryParams);
+  final uri = Uri.http('rescue-now.deno.dev', '/location', queryParams);
 
   //POST nu s-a setat inca idul adica inca n-am dat call deloc
-  if (patientId == 'gol lol') {
+  if (patientId == 'gol lol' || patientId == 'Error') {
     return await postSendLocation(uri);
   }
   //PUT a fost setat idul, deci vrem sa updatam datele
@@ -115,6 +128,7 @@ Future<Position> getAndSendLocation() async {
     response = await sendLocationToServer(
         patient.latitude, patient.longitude, patient.id);
   } catch (e) {
+    print('ceva problema la sendLocationToServer');
     print(e);
     return position;
   }
