@@ -7,3 +7,5 @@ Se poate da manage la backend de pe [proiectu de deno deploy](https://dash.deno.
 
 [repou de backend](https://github.com/Rescue-Now/rescue_now_backend) cum a zis mr antonel c-o sa cam fie mult mai bine asa stia el ce zice
 
+
+Credits: [BEBE](https://www.youtube.com/watch?v=DGuJPPL3Vrw)
